@@ -83,8 +83,8 @@ jobs:
           echo "Found app bundle at: $APP_PATH"
           mkdir -p build/Payload
           cp -r "$APP_PATH" build/Payload/
-          cd build && zip -r CheckProxy-unsigned.ipa Payload && cd ..
-          ls -lh CheckProxy-unsigned.ipa
+          (cd build && zip -r CheckProxy-unsigned.ipa Payload)
+          ls -lh build/CheckProxy-unsigned.ipa
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
