@@ -24,6 +24,14 @@ jobs:
         with:
           gradle-version: "8.10.2"
 
+      - name: Cache Kotlin/Native dependencies (~/.konan)
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: konan-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: |
+            konan-${{ runner.os }}-
+
       - name: Generate Gradle wrapper
         run: gradle wrapper --gradle-version 8.10.2
 
@@ -51,9 +59,19 @@ jobs:
       - name: Package unsigned IPA
         working-directory: iosApp
         run: |
+          echo "--- archive contents ---"
+          ls -R build/iosApp.xcarchive/ || true
+          echo "--- searching for .app ---"
+          APP_PATH=$(find build/iosApp.xcarchive -name "*.app" -type d | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "ERROR: No .app bundle found in archive"
+            exit 1
+          fi
+          echo "Found app bundle at: $APP_PATH"
           mkdir -p build/Payload
-          cp -r build/iosApp.xcarchive/Products/Applications/iosApp.app build/Payload/
+          cp -r "$APP_PATH" build/Payload/
           cd build && zip -r CheckProxy-unsigned.ipa Payload && cd ..
+          ls -lh CheckProxy-unsigned.ipa
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
