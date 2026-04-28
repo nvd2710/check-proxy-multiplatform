@@ -41,9 +41,13 @@ jobs:
       - name: Build shared framework (release)
         run: ./gradlew :composeApp:linkReleaseFrameworkIosArm64 --no-daemon
 
+      - name: Install xcbeautify (cleaner log output)
+        run: which xcbeautify || brew install xcbeautify
+
       - name: Build iOS app archive
         working-directory: iosApp
         run: |
+          set -o pipefail
           xcodebuild \
             -project iosApp.xcodeproj \
             -scheme iosApp \
@@ -51,10 +55,19 @@ jobs:
             -destination "generic/platform=iOS" \
             -archivePath build/iosApp.xcarchive \
             -allowProvisioningUpdates \
+            -skipMacroValidation \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            archive
+            archive 2>&1 | tee xcodebuild.log | xcbeautify --renderer github-actions
+
+      - name: Upload xcodebuild log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: iosApp/xcodebuild.log
+          retention-days: 7
 
       - name: Package unsigned IPA
         working-directory: iosApp
