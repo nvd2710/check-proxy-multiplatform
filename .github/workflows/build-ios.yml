@@ -21,15 +21,17 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+
+      - name: Generate Gradle wrapper
+        run: gradle wrapper --gradle-version 8.10.2
 
       - name: Show Xcode version
         run: xcodebuild -version
 
       - name: Build shared framework (release)
-        working-directory: .
-        run: |
-          chmod +x ./gradlew
-          ./gradlew :composeApp:linkReleaseFrameworkIosArm64 --no-daemon
+        run: ./gradlew :composeApp:linkReleaseFrameworkIosArm64 --no-daemon
 
       - name: Build iOS app archive
         working-directory: iosApp
