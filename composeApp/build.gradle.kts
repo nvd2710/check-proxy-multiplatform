@@ -38,7 +38,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.client.core)
-            implementation(libs.multiplatformSettings.noArg)
+            // multiplatform-settings removed for now (Kotlin 2.1 ABI incompatibility).
+            // Re-add when we need persistence: choose a version built with Kotlin 2.0.x
+            // or upgrade project to Kotlin 2.1.
         }
         androidMain.dependencies {
             implementation(libs.androidx.activityCompose)
