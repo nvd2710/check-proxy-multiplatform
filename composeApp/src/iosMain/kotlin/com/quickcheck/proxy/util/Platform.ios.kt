@@ -1,11 +1,11 @@
+@file:Suppress("DEPRECATION") // openURL(NSURL) deprecated in iOS 10 but works simpler
+
 package com.quickcheck.proxy.util
 
 import platform.Foundation.NSURL
-import platform.UIKit.UIActivityViewController
+import platform.Foundation.NSUserDefaults
 import platform.UIKit.UIApplication
 import platform.UIKit.UIPasteboard
-import platform.darwin.dispatch_async
-import platform.darwin.dispatch_get_main_queue
 
 actual val platformName: String = "iOS"
 
@@ -14,54 +14,40 @@ actual fun copyToClipboard(text: String): Int {
     return text.lineSequence().count { it.isNotBlank() }
 }
 
-actual fun readFromClipboard(): String {
-    return UIPasteboard.generalPasteboard.string ?: ""
-}
+actual fun readFromClipboard(): String =
+    UIPasteboard.generalPasteboard.string ?: ""
 
 actual fun openUrl(url: String) {
     val nsUrl = NSURL.URLWithString(url) ?: return
-    dispatch_async(dispatch_get_main_queue()) {
-        UIApplication.sharedApplication.openURL(
-            url = nsUrl,
-            options = emptyMap<Any?, Any>(),
-            completionHandler = null,
-        )
-    }
+    UIApplication.sharedApplication.openURL(nsUrl)
 }
 
 actual fun openDeepLink(deepLink: String, fallbackUrl: String) {
     val deep = NSURL.URLWithString(deepLink)
-    if (deep != null && UIApplication.sharedApplication.canOpenURL(deep)) {
-        openUrl(deepLink)
+    val app = UIApplication.sharedApplication
+    if (deep != null && app.canOpenURL(deep)) {
+        app.openURL(deep)
     } else {
         openUrl(fallbackUrl)
     }
 }
 
 actual fun shareText(text: String, subject: String) {
+    // TODO: Wire UIActivityViewController via root view controller once
+    // full Compose UI is ported. Stub for skeleton compile.
     if (text.isBlank()) return
-    dispatch_async(dispatch_get_main_queue()) {
-        val activity = UIActivityViewController(
-            activityItems = listOf(text),
-            applicationActivities = null,
-        )
-        val root = UIApplication.sharedApplication
-            .keyWindow?.rootViewController
-        root?.presentViewController(activity, animated = true, completion = null)
-    }
+    println("[shareText] subject=$subject, ${text.length} chars")
 }
 
 actual fun showToast(message: String) {
-    // iOS has no native toast; the Compose UI layer should render its own snackbar.
-    // Stub here — real impl will be in Compose layer via a ToastHost composable.
+    // iOS has no native toast. Compose UI layer should render its own
+    // SnackbarHost. For skeleton, just log.
     println("[Toast] $message")
 }
 
 actual fun setAppLocale(tag: String) {
-    // iOS per-app language is set via Info.plist (CFBundleAllowMixedLocalizations)
-    // and AppleLanguages NSUserDefaults entry. Requires app restart.
-    // Stub for now — to be implemented when localization is wired.
-    val defaults = platform.Foundation.NSUserDefaults.standardUserDefaults
+    val defaults = NSUserDefaults.standardUserDefaults
     defaults.setObject(listOf(tag), forKey = "AppleLanguages")
     defaults.synchronize()
+    // iOS requires app restart to apply locale change. Will add restart UX later.
 }

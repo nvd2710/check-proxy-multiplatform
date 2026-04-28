@@ -1,9 +1,6 @@
 package com.quickcheck.proxy.data
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.ProxyBuilder
-import io.ktor.client.engine.ProxyConfig
-import io.ktor.client.engine.http
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.statement.HttpResponse
@@ -81,7 +78,3 @@ expect fun createPlatformProxyClient(entry: ProxyEntry, timeoutSec: Long): HttpC
 
 /** Wall clock millis (System.currentTimeMillis on JVM, NSDate on iOS). */
 expect fun currentTimeMillis(): Long
-
-/** Helper to build Ktor ProxyConfig from entry (HTTP CONNECT only). */
-internal fun ProxyEntry.toHttpProxyConfig(): ProxyConfig =
-    ProxyBuilder.http("http://$host:$port")
