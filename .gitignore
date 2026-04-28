@@ -1,0 +1,38 @@
+# Gradle
+.gradle/
+build/
+local.properties
+
+# IDE
+.idea/
+*.iml
+.fleet/
+.vscode/
+
+# Android
+captures/
+.externalNativeBuild
+.cxx
+*.apk
+*.aab
+*.keystore
+*.jks
+keystore/
+
+# Kotlin/Native
+.kotlin/
+
+# iOS / Xcode
+xcuserdata/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+DerivedData/
+build/
+Pods/
+*.xcodeproj/xcuserdata/
+
+# macOS
+.DS_Store
+
+# CI artifacts
+*.ipa

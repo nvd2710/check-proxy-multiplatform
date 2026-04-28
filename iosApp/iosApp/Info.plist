@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Performance: disable 30fps cap on ProMotion phones for smoother Compose -->
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
+
+    <!-- Display name shown under the icon on home screen -->
+    <key>CFBundleDisplayName</key>
+    <string>Check Proxy</string>
+
+    <!-- Allow HTTP cleartext for the proxy connectivity test endpoint.
+         ip-api.com free tier is HTTP only; HTTPS requires paid plan. -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>ip-api.com</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+
+    <!-- Required so canOpenURL("tg://...") returns true when Telegram is installed -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>tg</string>
+    </array>
+</dict>
+</plist>

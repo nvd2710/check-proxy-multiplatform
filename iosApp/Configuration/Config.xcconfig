@@ -1,0 +1,19 @@
+// Personal team ID — leave empty for unsigned CI builds (eSign signs later).
+// Fill in if you ever build & sign locally on a Mac with Apple Developer account.
+TEAM_ID=
+
+PRODUCT_NAME=CheckProxy
+PRODUCT_BUNDLE_IDENTIFIER=com.quickcheck.proxy
+
+// Min iOS version — covers ~95% of active devices
+IPHONEOS_DEPLOYMENT_TARGET=14.0
+
+// Version (CFBundleVersion + CFBundleShortVersionString)
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0
+
+// Disable bitcode (deprecated since Xcode 14)
+ENABLE_BITCODE=NO
+
+// Run on iPhone + iPad (Universal)
+TARGETED_DEVICE_FAMILY=1,2
